@@ -16,12 +16,14 @@ public class ValidatorPessoa extends AbstractValidator<Pessoa> {
 	public void rules() {
 
 		ruleFor(Pessoa::getNome).must(not(nullValue())).withMessage("Nome não pode ser nulo").withFieldName("nome");
+		
+		ruleFor(Pessoa::getSexo).must(not(nullValue())).withMessage("Sexo não pode ser nulo").withFieldName("sexo");
 
 		ruleFor(Pessoa::getIdade).must(greaterThan(0)).withMessage("Idade tem que ser maior que 0 (ZERO)")
 				.withFieldName("idade");
 
 		ruleFor(Pessoa::getComprovanteMilitar).must(isTrue())
-				.withAttempedValue(p -> p.getIdade() >= 18 && p.getSexo().equals(SexoEnum.MASCULINO))
+				.withAttempedValue(p -> p.getIdade() >= 18 && p.getSexo() != null && p.getSexo().equals(SexoEnum.MASCULINO))
 				.withMessage("Comprovante militar é obrigatório!").withFieldName("comprovanteMilitar");
 	}
 
