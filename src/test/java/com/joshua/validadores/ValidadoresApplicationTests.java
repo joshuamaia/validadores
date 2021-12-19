@@ -29,21 +29,22 @@ class ValidadoresApplicationTests {
 	void contextLoads() {
 		final Pessoa pessoa = new Pessoa();
 
-		pessoa.setDataNascimento(LocalDate.parse("2021-12-18", DateTimeFormatter.ISO_LOCAL_DATE));
-		pessoa.setNome("Ana");
-		pessoa.setSexo(SexoEnum.FEMININO);
+		pessoa.setDataNascimento(LocalDate.parse("2003-12-18", DateTimeFormatter.ISO_LOCAL_DATE));
+		pessoa.setNome("Joshua");
+		pessoa.setSexo(SexoEnum.MASCULINO);
 		pessoa.setComprovanteMilitar(false);
 		
 		ValidatorPessoa validatorPessoa = new ValidatorPessoa();
 	    final ValidationResult result = validatorPessoa.validate(pessoa);
 	    
+	    System.out.println(result.getErrors());
+	    
 	    assertFalse(result.isValid());
 	    assertThat(result.getErrors(), not(empty()));
 	    assertThat(result.getErrors(), hasSize(1));
 
-	    assertThat(result.getErrors(), hasItem(hasProperty("field", containsString("dataNascimento"))));
-	    assertThat(result.getErrors(), hasItem(hasProperty("attemptedValue", equalTo(pessoa.getDataNascimento()))));
-	    assertThat(result.getErrors(), hasItem(hasProperty("message", containsString("Data de Nascimento não pode ser menor que ZERO"))));
+	    assertThat(result.getErrors(), hasItem(hasProperty("field", containsString("comprovanteMilitar"))));
+	    assertThat(result.getErrors(), hasItem(hasProperty("message", containsString("Comprovante militar é obrigatório!"))));
 	}
 
 }
