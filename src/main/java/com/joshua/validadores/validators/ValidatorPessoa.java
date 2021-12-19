@@ -1,11 +1,8 @@
 package com.joshua.validadores.validators;
 
 import static br.com.fluentvalidator.predicate.LogicalPredicate.isTrue;
-
-import static br.com.fluentvalidator.predicate.LogicalPredicate.isFalse;
 import static br.com.fluentvalidator.predicate.LogicalPredicate.not;
 import static br.com.fluentvalidator.predicate.ObjectPredicate.nullValue;
-import br.com.fluentvalidator.builder.When;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -35,7 +32,7 @@ public class ValidatorPessoa extends AbstractValidator<Pessoa> {
 			return diff.toDays() < 0;
 		})).withMessage("Data de Nascimento não pode ser menor que ZERO").withFieldName("dataNascimento");
 
-		ruleFor(pessoa -> pessoa).must(isTrue(p -> p.getComprovanteMilitar() == true))
+		ruleFor(pessoa -> pessoa).must(isTrue(Pessoa::getComprovanteMilitar))
 				.when(p -> Duration.between(p.getDataNascimento().atStartOfDay(), LocalDate.now().atStartOfDay())
 						.toDays() >= 18 && p.getSexo() != null && p.getSexo().equals(SexoEnum.MASCULINO))
 				.withMessage("Comprovante militar é obrigatório!").withFieldName("comprovanteMilitar");
