@@ -25,12 +25,70 @@ import br.com.fluentvalidator.context.ValidationResult;
 class ValidadoresApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void testComprovanteMilitarObrigatorio() {
 		final Pessoa pessoa = new Pessoa();
 
 		pessoa.setDataNascimento(LocalDate.parse("2003-12-18", DateTimeFormatter.ISO_LOCAL_DATE));
-		pessoa.setNome("Joshua");
+		pessoa.setNome("João");
 		pessoa.setSexo(SexoEnum.MASCULINO);
+		pessoa.setComprovanteMilitar(false);
+		
+		ValidatorPessoa validatorPessoa = new ValidatorPessoa();
+	    final ValidationResult result = validatorPessoa.validate(pessoa);
+	    
+	    assertFalse(result.isValid());
+	    assertThat(result.getErrors(), not(empty()));
+	    assertThat(result.getErrors(), hasSize(1));
+
+	    assertThat(result.getErrors(), hasItem(hasProperty("field", containsString("comprovanteMilitar"))));
+	    assertThat(result.getErrors(), hasItem(hasProperty("message", containsString("Comprovante militar é obrigatório!"))));
+	}
+	
+	@Test
+	void testComprovanteMilitarFalso() {
+		final Pessoa pessoa = new Pessoa();
+
+		pessoa.setDataNascimento(LocalDate.parse("2003-12-18", DateTimeFormatter.ISO_LOCAL_DATE));
+		pessoa.setNome("Maria");
+		pessoa.setSexo(SexoEnum.FEMININO);
+		pessoa.setComprovanteMilitar(true);
+		
+		ValidatorPessoa validatorPessoa = new ValidatorPessoa();
+	    final ValidationResult result = validatorPessoa.validate(pessoa);
+	    
+	    assertFalse(result.isValid());
+	    assertThat(result.getErrors(), not(empty()));
+	    assertThat(result.getErrors(), hasSize(1));
+
+	    assertThat(result.getErrors(), hasItem(hasProperty("field", containsString("comprovanteMilitar"))));
+	    assertThat(result.getErrors(), hasItem(hasProperty("message", containsString("Comprovante militar tem que ser falso!"))));
+	}
+	
+	@Test
+	void testPessoaSemSexo() {
+		final Pessoa pessoa = new Pessoa();
+
+		pessoa.setDataNascimento(LocalDate.parse("2003-12-18", DateTimeFormatter.ISO_LOCAL_DATE));
+		pessoa.setNome("Maria");
+		pessoa.setComprovanteMilitar(true);
+		
+		ValidatorPessoa validatorPessoa = new ValidatorPessoa();
+	    final ValidationResult result = validatorPessoa.validate(pessoa);
+	    
+	    assertFalse(result.isValid());
+	    assertThat(result.getErrors(), not(empty()));
+	    assertThat(result.getErrors(), hasSize(1));
+
+	    assertThat(result.getErrors(), hasItem(hasProperty("field", containsString("sexo"))));
+	    assertThat(result.getErrors(), hasItem(hasProperty("message", containsString("Sexo não pode ser nulo!"))));
+	}
+	
+	@Test
+	void testPessoaSemDataDeNascimento() {
+		final Pessoa pessoa = new Pessoa();
+
+		pessoa.setNome("Maria");
+		pessoa.setSexo(SexoEnum.FEMININO);
 		pessoa.setComprovanteMilitar(false);
 		
 		ValidatorPessoa validatorPessoa = new ValidatorPessoa();
@@ -42,8 +100,27 @@ class ValidadoresApplicationTests {
 	    assertThat(result.getErrors(), not(empty()));
 	    assertThat(result.getErrors(), hasSize(1));
 
-	    assertThat(result.getErrors(), hasItem(hasProperty("field", containsString("comprovanteMilitar"))));
-	    assertThat(result.getErrors(), hasItem(hasProperty("message", containsString("Comprovante militar é obrigatório!"))));
+	    assertThat(result.getErrors(), hasItem(hasProperty("field", containsString("dataNascimento"))));
+	    assertThat(result.getErrors(), hasItem(hasProperty("message", containsString("Data de Nascimento não pode ser nula!"))));
+	}
+	
+	@Test
+	void testPessoaSemNome() {
+		final Pessoa pessoa = new Pessoa();
+
+		pessoa.setDataNascimento(LocalDate.parse("2003-12-18", DateTimeFormatter.ISO_LOCAL_DATE));
+		pessoa.setSexo(SexoEnum.FEMININO);
+		pessoa.setComprovanteMilitar(false);
+		
+		ValidatorPessoa validatorPessoa = new ValidatorPessoa();
+	    final ValidationResult result = validatorPessoa.validate(pessoa);
+	    
+	    assertFalse(result.isValid());
+	    assertThat(result.getErrors(), not(empty()));
+	    assertThat(result.getErrors(), hasSize(1));
+
+	    assertThat(result.getErrors(), hasItem(hasProperty("field", containsString("nome"))));
+	    assertThat(result.getErrors(), hasItem(hasProperty("message", containsString("Nome não pode ser nulo"))));
 	}
 
 }
