@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -24,6 +25,38 @@ import br.com.fluentvalidator.context.ValidationResult;
 @SpringBootTest
 class ValidadoresApplicationTests {
 
+	@Test
+	void testPessoaValidaHomem() {
+		final Pessoa pessoa = new Pessoa();
+
+		pessoa.setDataNascimento(LocalDate.parse("2003-12-18", DateTimeFormatter.ISO_LOCAL_DATE));
+		pessoa.setNome("João");
+		pessoa.setSexo(SexoEnum.MASCULINO);
+		pessoa.setComprovanteMilitar(true);
+		
+		ValidatorPessoa validatorPessoa = new ValidatorPessoa();
+	    final ValidationResult result = validatorPessoa.validate(pessoa);
+	    
+	    assertTrue(result.isValid());
+
+	}
+	
+	@Test
+	void testPessoaValidaMulher() {
+		final Pessoa pessoa = new Pessoa();
+
+		pessoa.setDataNascimento(LocalDate.parse("2003-12-18", DateTimeFormatter.ISO_LOCAL_DATE));
+		pessoa.setNome("Maria");
+		pessoa.setSexo(SexoEnum.FEMININO);
+		pessoa.setComprovanteMilitar(false);
+		
+		ValidatorPessoa validatorPessoa = new ValidatorPessoa();
+	    final ValidationResult result = validatorPessoa.validate(pessoa);
+	    
+	    assertTrue(result.isValid());
+
+	}
+	
 	@Test
 	void testComprovanteMilitarObrigatorio() {
 		final Pessoa pessoa = new Pessoa();
